@@ -1,0 +1,163 @@
+﻿@model EMenuApplication.ViewModels.User_VM
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">User</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="User">Users</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Register", "User", FormMethod.Post, new { role = "form", id = "user-register-form", enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        @Html.HiddenFor(m => m.FileName)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"] </h3>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.FullName, "Full name")
+                                            @Html.TextBoxFor(m => m.FullName, new { placeholder = "Enter full name", @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.FullName, "User name")
+                                            @Html.TextBoxFor(m => m.UserName, new { placeholder = "Enter username", @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Email, "Email address")
+                                            @Html.TextBoxFor(m => m.Email, new { placeholder = "Enter email address", @class = "form-control", @type = "email", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Password, "Password")
+                                            @Html.PasswordFor(m => m.Password, new { value = Model != null ? Model.Password : "", placeholder = "Enter password", @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Phone, "Phone no")
+                                            @Html.TextBoxFor(m => m.Phone, new { placeholder = "Enter phone no", @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Active, "Is Active?")
+                                            @Html.CheckBoxFor(m => m.Active, new { @checked = true, @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.IsAllowVoucherIssuancePermission, "Voucher Issuance")
+                                            @Html.CheckBoxFor(m => m.IsAllowVoucherIssuancePermission, new { @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.IsAllowVoucherApprovalPermission, "Voucher Approval")
+                                            @Html.CheckBoxFor(m => m.IsAllowVoucherApprovalPermission, new { @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.StoreIds, "Stores")
+                                            <select asp-for="StoreIds" asp-items='new SelectList(ViewBag.StoresList,"Value","Text")' class="form-control select2" multiple="multiple" data-placeholder="Select Stores"></select>
+                                        </div>
+                                    </div>
+                                    <div class=" col-lg-6">
+                                        @if (Model != null && Model.Id > 0)
+                                        {
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        @Html.LabelFor(m => m.ProfilePicture, "Profile Picture")
+                                                        <div class="input-group">
+                                                            <div class="custom-file">
+                                                                <input asp-for="ProfilePicture" type="file">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <div class="fileuploader-items d-none" id="profile-image-upload">
+                                                            <ul class="fileuploader-items-list">
+                                                                <li class="fileuploader-item file-type-image file-ext-png file-has-popup">
+                                                                    <div class="columns">
+                                                                        <div class="column-thumbnail">
+                                                                            <div class="fileuploader-item-image">
+                                                                                @if (Model != null && Model.FileName != null)
+                                                                                {
+                                                                                    <img id="profile-image" src="~/Image/@Model.FileName" onclick="onImageClick(this.src)" />
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <img id="profile-image" onclick="onImageClick(this.src)" />
+                                                                                }
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="column-actions">
+                                                                            <a href="javascript:" onclick="deleteImage('ProfilePicture')"><i class="fas fa-trash-alt"></i></a>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="User" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

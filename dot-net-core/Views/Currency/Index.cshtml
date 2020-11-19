@@ -1,0 +1,166 @@
+﻿@model EMenuApplication.ViewModels.Currency_VM
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Currency</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="Currency">Currency</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Save", "Currency", FormMethod.Post, new { role = "form", id = "currency-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"] </h3>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Currency, "Currency Code")
+                                            @Html.TextBoxFor(m => m.Currency, new
+                                            {
+                                                placeholder = "Enter currency code",
+                                                @class = "form-control",
+                                                autocomplete = "off",
+                                                maxlength = "3"
+                                           ,
+                                           @onkeypress = "return lettersOnly(event);"
+                                       })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Symbol, "Currency Symbol(EN)")
+                                            @Html.TextBoxFor(m => m.Symbol, new { placeholder = "Enter currency symbol(EN)", @class = "form-control", autocomplete = "off", maxlength = "5" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.SymbolAR, "Currency Symbol(AR)")
+                                            @Html.TextBoxFor(m => m.SymbolAR, new { placeholder = "Enter currency symbol(AR)", @class = "form-control", autocomplete = "off", maxlength = "5" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="Currency" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $.validator.addMethod("exactlength", function (value, element, param) {
+                return this.optional(element) || value.length == param;
+            }, "Please enter exactly {0} characters.");
+
+            $('#currency-form').validate({
+                rules: {
+                    Currency: {
+                        required: true,
+                        exactlength: 3,
+                        remote: function () {
+                            return {
+                                url: '/Currency/CheckCurrencyCode',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    currency: function () {
+                                        return $('#Currency').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    Symbol: {
+                        required: true,
+                        normalizer: function (value) {
+                            return $.trim(value);
+                        }
+                    },
+                    SymbolAR: {
+                        required: true,
+                        normalizer: function (value) {
+                            return $.trim(value);
+                        }
+                    },
+                },
+                messages: {
+                    Currency: {
+                        required: "Please enter a currency code",
+                        remote: "This currency code is already taken"
+                    },
+                    Symbol: {
+                        required: "Please enter currency symbol(EN)",
+                    },
+                    SymbolAR: {
+                        required: "Please enter currency symbol(AR)",
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('#Currency').keyup(function () {
+                this.value = this.value.toUpperCase();
+            });
+        });
+
+        function lettersOnly(event) {
+            var charCode = event.keyCode;
+            if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 8)
+                return true;
+            else
+                return false;
+        }
+    </script>
+}

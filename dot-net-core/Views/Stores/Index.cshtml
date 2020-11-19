@@ -1,0 +1,256 @@
+﻿@model EMenuApplication.ViewModels.Store_VM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Store</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="Category">Stores</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Save", "Stores", FormMethod.Post, new { role = "form", id = "store-form", enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"] </h3>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.StoreCode, "Store Code")
+                                            @Html.TextBoxFor(m => m.StoreCode, new { placeholder = "Enter store code", @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.StoreName, "Store name")
+                                            @Html.TextBoxFor(m => m.StoreName, new { placeholder = "Enter store name", @class = "form-control", autocomplete = "off", maxlength = "64" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ClientId, "Client")
+                                            @Html.DropDownListFor(m => m.ClientId, new SelectList(ViewBag.Clients, "Value", "Text"), "Select Client", new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ConceptIds, "Concepts")
+                                            <select asp-for="ConceptIds" asp-items='new SelectList(ViewBag.ConceptsList,"Value","Text")' class="form-control select2" multiple="multiple" data-placeholder="Select Concepts"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.CountryCode, "Select Country")
+                                            @Html.DropDownListFor(m => m.CountryCode, new SelectList(ViewBag.CountryList, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.RegionId, "Select Region")
+                                            @Html.DropDownListFor(m => m.RegionId, new SelectList(ViewBag.RegionList, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Status, "Is Active?")
+                                            @Html.CheckBoxFor(m => m.Status, new { @checked = true, @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="Stores" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $('#StoreCode').bind('keypress', function (e) {
+                var specialKeys = new Array();
+                specialKeys.push(8); //Backspace
+                specialKeys.push(9); //Tab
+                specialKeys.push(46); //Delete
+                specialKeys.push(36); //Home
+                specialKeys.push(35); //End
+                specialKeys.push(37); //Left
+                specialKeys.push(39); //Right
+                var keyCode = e.keyCode == 0 ? e.charCode : e.keyCode;
+                var ret = ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122) || (specialKeys.indexOf(e.keyCode) != -1 && e.charCode != e.keyCode));
+                return ret;
+            });
+
+
+            $('#store-form').validate({
+                onfocusout: function (element) {
+                    element.value = $.trim(element.value);
+                    $(element).valid();
+                },
+                rules: {
+                    ClientId: {
+                        required: true,
+                    },
+                    ConceptIds: {
+                        required: true,
+                    },
+                    StoreCode: {
+                        required: true,
+                        minlength: 3,
+                        remote: function () {
+                            return {
+                                url: '/Stores/CheckUniqueStoreCode',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    storeCode: function () {
+                                        return $('#StoreCode').val();
+                                    },
+                                    clientId: function () {
+                                        return $('#ClientId').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    StoreName: {
+                        required: true,
+                        remote: function () {
+                            return {
+                                url: '/Stores/CheckUniqueStoreName',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    storeName: function () {
+                                        return $('#StoreName').val();
+                                    },
+                                    clientId: function () {
+                                        return $('#ClientId').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    CountryCode: {
+                        required: true,
+                    },
+                    RegionId: {
+                        required: true,
+                    },
+                    CurrencyId: {
+                        required: true,
+                    }
+                },
+                messages: {
+                    ClientId: {
+                        required: "Please select a client",
+                    },
+                    ConceptIds: {
+                        required: "Please select concepts",
+                    },
+                    StoreCode: {
+                        required: "Please enter a store code",
+                        minlength: "Your store code must be at least 3 characters long",
+                        remote: "This store code is already taken."
+                    },
+                    StoreName: {
+                        required: "Please enter a store name",
+                        remote: "This store name is already taken"
+                    },
+                    CountryCode: {
+                        required: "Please select country",
+                    },
+                    RegionId: {
+                        required: "Please select region",
+                    },
+                    CurrencyId: {
+                        required: "Please select currency",
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('#ClientId').on('change', function () {
+                var clientId = $("#ClientId").val();
+                var url = "/Stores/GetConceptList";
+                $.getJSON(url, { clientId: clientId }, function (data) {
+                    var item = "";
+                    $("#ConceptIds").empty();
+                    $.each(data, function (i, concept) {
+                        item += '<option value="' + concept.value + '">' + concept.text + '</option>'
+                    });
+
+                    $("#ConceptIds").html(item);
+                });
+                $(this.form).valid();
+            });
+        });
+    </script>
+}

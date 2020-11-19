@@ -1,0 +1,200 @@
+﻿@model EMenuApplication.ViewModels.Client_VM
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Client</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="Client">Client</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Save", "Client", FormMethod.Post, new { role = "form", id = "client-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"] </h3>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.FirstName, "First Name")
+                                            @Html.TextBoxFor(m => m.FirstName, new { placeholder = "Enter first name", @class = "form-control", autocomplete = "off", maxlength = "50" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.LastName, "Last Name")
+                                            @Html.TextBoxFor(m => m.LastName, new { placeholder = "Enter last name", @class = "form-control", autocomplete = "off", maxlength = "50" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.CompanyName, "Company Name")
+                                            @Html.TextBoxFor(m => m.CompanyName, new { placeholder = "Enter company name", @class = "form-control", autocomplete = "off", maxlength = "50" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Status, "Is Active?")
+                                            @Html.CheckBoxFor(m => m.Status, new { @checked = true, @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Address1, "Address Line1")
+                                            @Html.TextBoxFor(m => m.Address1, new { placeholder = "Enter address line1", @class = "form-control", autocomplete = "off", maxlength = "50" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Address2, "Address Line2")
+                                            @Html.TextBoxFor(m => m.Address2, new { placeholder = "Enter address line2", @class = "form-control", autocomplete = "off", maxlength = "50" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.EmailAddress, "Email Address")
+                                            @Html.TextBoxFor(m => m.EmailAddress, new { placeholder = "Enter email address", @class = "form-control", autocomplete = "off", maxlength = "50" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.PhoneNo, "Phone No")
+                                            @Html.TextBoxFor(m => m.PhoneNo, new { placeholder = "Enter phone no", @class = "form-control", autocomplete = "off", maxlength = "15" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="Client" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#client-form').validate({
+                rules: {
+                    FirstName: {
+                        required: true,
+                    },
+                    LastName: {
+                        required: true,
+                    },
+                    CompanyName: {
+                        required: true,
+                        remote: function () {
+                            return {
+                                url: '/Client/CheckUniqueCompanyName',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    companyName: function () {
+                                        return $('#CompanyName').val();
+                                    }
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    Address1: {
+                        required: true,
+                    },
+                    EmailAddress: {
+                        required: true,
+                        email: true,
+                        remote: function () {
+                            return {
+                                url: '/Client/CheckUniqueEmail',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    email: function () {
+                                        return $('#EmailAddress').val();
+                                    }
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    PhoneNo: {
+                        required: true,
+                    },
+                },
+                messages: {
+                    FirstName: {
+                        required: "Please enter first name",
+                    },
+                    LastName: {
+                        required: "Please enter last name",
+                    },
+                    CompanyName: {
+                        required: "Please enter company name",
+                        remote: "This company name is already taken."
+                    },
+                    Address1: {
+                        required: "Please enter address line1",
+                    },
+                    EmailAddress: {
+                        required: "Please enter email address",
+                        email: "Please enter valid email address",
+                        remote: "This email address is already taken."
+                    },
+                    PhoneNo: {
+                        required: "Please enter phone no",
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+        });
+    </script>
+}
+

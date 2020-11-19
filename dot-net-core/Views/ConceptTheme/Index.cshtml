@@ -1,0 +1,323 @@
+﻿@model EMenuApplication.ViewModels.ConceptTheme_VM
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Concept Theme</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="ConceptTheme">Concept Theme</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Save", "ConceptTheme", FormMethod.Post, new { role = "form", id = "concept-theme-form", enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        @Html.HiddenFor(m => m.LogoName)
+                        @Html.HiddenFor(m => m.FeedBackIconName)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"]</h3>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @if (ViewData["Title"].ToString() == "Edit")
+                                            {
+                                                @Html.HiddenFor(m => m.ConceptId)
+                                                <label>Concept Name</label>
+                                                <h5>@Model.ConceptName</h5>
+                                            }
+                                            else
+                                            {
+                                                @Html.LabelFor(m => m.ConceptId, "Select Concept")
+                                                @Html.DropDownListFor(m => m.ConceptId, new SelectList(ViewBag.ConceptsList, "Value", "Text"), new { @class = "form-control select2" })
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Status, "Is Active?")
+                                            @Html.CheckBoxFor(m => m.Status, new { @checked = true, @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ColorCode, "Color Code")
+
+                                            <div class="input-group my-colorpicker2">
+                                                @Html.TextBoxFor(m => m.ColorCode, new { placeholder = "Enter color code", @class = "form-control", autocomplete = "off" })
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"><i class="fas fa-square"></i></span>
+                                                </div>
+                                            </div>
+                                            <!-- /.input group -->
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m.LogoImage, "Upload Logo")
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input asp-for="LogoImage" type="file">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <div class="fileuploader-items d-none" id="logo-image-upload">
+                                                        <ul class="fileuploader-items-list">
+                                                            <li class="fileuploader-item file-type-image file-ext-png file-has-popup">
+                                                                <div class="columns">
+                                                                    <div class="column-thumbnail">
+                                                                        <div class="fileuploader-item-image">
+                                                                            @if (Model != null && Model.LogoName != null)
+                                                                            {
+                                                                                <img id="logo-image" src="~/Image/@Model.LogoName" onclick="onImageClick(this.src)" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <img id="logo-image" onclick="onImageClick(this.src)" />
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="column-actions">
+                                                                        <a href="javascript:" onclick="deleteImage('LogoImage')"><i class="fas fa-trash-alt"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m.FeedBackIcon, "Upload Feedback Icon")
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input asp-for="FeedBackIcon" type="file">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <div class="fileuploader-items d-none" id="feedback-icon-upload">
+                                                        <ul class="fileuploader-items-list">
+                                                            <li class="fileuploader-item file-type-image file-ext-png file-has-popup">
+                                                                <div class="columns">
+                                                                    <div class="column-thumbnail">
+                                                                        <div class="fileuploader-item-image">
+                                                                            @if (Model != null && Model.FeedBackIconName != null)
+                                                                            {
+                                                                                <img id="feedback-icon" src="~/Image/@Model.FeedBackIconName" onclick="onImageClick(this.src)" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <img id="feedback-icon" onclick="onImageClick(this.src)" />
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="column-actions">
+                                                                        <a href="javascript:" onclick="deleteImage('FeedBackIcon')"><i class="fas fa-trash-alt"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="ConceptTheme" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div id="preview-modal" class="preview-modal">
+    <span class="close" onclick="onModalClose()">&times;</span>
+    <img class="preview-modal-content" id="preview-image">
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $('.my-colorpicker2 .fa-square').css('color', $("#ColorCode").val());
+            if ($('#LogoName').val() != '') {
+                $("#logo-image-upload").removeClass('d-none');
+            }
+
+            debugger
+            if ($('#FeedBackIconName').val() != '' && $('#FeedBackIconName').val() != undefined) {
+                $("#feedback-icon-upload").removeClass('d-none');
+            }
+
+            $.validator.addMethod("validExtension", function (value, element) {
+                var allowedExtensions = ['png', 'jpg', 'gif', 'jpeg'];
+                if (element.files.length > 0) {
+                    var file = element.files[0];
+                    var extension = file.type.split("/").pop().toLowerCase();
+                    if (allowedExtensions.indexOf(extension) === -1) {
+                        deleteImage(element.id)
+                        return false;
+                    }
+                    else {
+                        if (element.id === 'LogoImage') {
+                            document.getElementById('logo-image').src = URL.createObjectURL(file)
+                            $("#logo-image-upload").removeClass('d-none');
+                        }
+                        if (element.id === 'FeedBackIcon') {
+                            document.getElementById('feedback-icon').src = URL.createObjectURL(file)
+                            $("#feedback-icon-upload").removeClass('d-none');
+                        }
+                        return true;
+                    }
+                }
+                return true;
+            });
+
+            $('#concept-theme-form').validate({
+                rules: {
+                    ConceptId: {
+                        required: true,
+                        remote: function () {
+                            return {
+                                url: '/ConceptTheme/CheckUniqueTheme',
+                                type: "get",
+                                data: {
+                                    conceptId: function () {
+                                        return $('#ConceptId').val();
+                                    }
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    LogoImage: {
+                        validExtension: true
+                    },
+                    FeedBackIcon: {
+                        validExtension: true
+                    }
+                },
+                messages: {
+                    ConceptId: {
+                        required: "Please select concept",
+                        remote:"Theme already exist"
+                    },
+                    LogoImage: {
+                        validExtension: "File must be JPG, GIF or PNG",
+                    },
+                    FeedBackIcon: {
+                        validExtension: "File must be JPG, GIF or PNG",
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('#ConceptId').on('change', function () {
+                $(this.form).valid();
+
+            });
+        });
+
+        function deleteImage(id) {
+            if (id === 'LogoImage') {
+                $('#LogoImage').val('');
+                $('#LogoName').val('');
+                document.getElementById('logo-image').src = ''
+                $("#logo-image-upload").addClass('d-none');
+            } else if (id === 'FeedBackIcon') {
+                $('#FeedBackIcon').val('');
+                $('#FeedBackIconName').val('');
+                document.getElementById('feedback-icon').src = ''
+                $("#feedback-icon-upload").addClass('d-none');
+            }
+        }
+                
+        document.getElementById('LogoImage').onchange = function (e) {
+            $("#LogoImage").blur().focus();
+            if (this.files.length === 0) {
+                deleteImage('LogoImage');
+            }
+        };
+
+        document.getElementById('FeedBackIcon').onchange = function (e) {
+            $("#FeedBackIcon").blur().focus();
+            if (this.files.length === 0) {
+                deleteImage('FeedBackIcon');
+            }
+        };
+
+        function onImageClick(url) {
+            $('#preview-image').attr('src', url);
+            $("#preview-modal").show();
+        }
+
+        function onModalClose() {
+            $('#preview-image').attr('src', '');
+            $("#preview-modal").hide();
+        }
+    </script>
+}

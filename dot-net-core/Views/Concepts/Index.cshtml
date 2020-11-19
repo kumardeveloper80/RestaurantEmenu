@@ -1,0 +1,141 @@
+﻿@model EMenuApplication.ViewModels.Concepts_VM
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Concepts</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="Concepts">Concepts</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Save", "Concepts", FormMethod.Post, new { role = "form", id = "concepts-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"] </h3>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ClientId, "Client")
+                                            @Html.DropDownListFor(m => m.ClientId, new SelectList(ViewBag.Clients, "Value", "Text"), "-Select Client-", new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ConceptName, "Concept Name")
+                                            @Html.TextBoxFor(m => m.ConceptName, new
+                                            {
+                                                placeholder = "Enter concept name",
+                                                @class = "form-control",
+                                                autocomplete = "off",
+                                                maxlength = "50"
+                                       })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Active, "Is Active?")
+                                            @Html.CheckBoxFor(m => m.Active, new { @checked = true, @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="Concepts" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#concepts-form').validate({
+                rules: {
+                    ClientId: {
+                        required: true
+                    },
+                    ConceptName: {
+                        required: true,
+                        remote: function () {
+                            return {
+                                url: '/Concepts/CheckConceptName',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    name: function () {
+                                        return $('#ConceptName').val();
+                                    },
+                                    clientId: function () {
+                                        return $('#ClientId').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                },
+                messages: {
+                    ClientId: {
+                        required: "Please select client"
+                    },
+                    ConceptName: {
+                        required: "Please enter a concepts name",
+                        remote: "This concepts name is already taken"
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('#ClientId').on('change', function () {
+                $(this.form).valid();
+            });
+        });
+    </script>
+}
+

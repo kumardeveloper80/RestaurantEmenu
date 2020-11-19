@@ -1,0 +1,199 @@
+﻿@model EMenuApplication.ViewModels.User_VM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (EMenuApplication.AppContext.Current.Session.GetInt32("IsSuperAdmin") == 1)
+{
+    @await Html.PartialAsync("_AdminPartialView.cshtml", Model)
+}
+else if (EMenuApplication.AppContext.Current.Session.GetInt32("IsAdmin") == 1)
+{
+    @await Html.PartialAsync("_UserPartialView.cshtml", Model)
+}
+
+
+
+<!-- The Modal -->
+<div id="preview-modal" class="preview-modal">
+    <span class="close" onclick="onModalClose()">&times;</span>
+    <img class="preview-modal-content" id="preview-image">
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if ($('#FileName').val() != '') {
+                $("#profile-image-upload").removeClass('d-none');
+            }
+
+            $.validator.addMethod("validExtension", function (value, element) {
+                var allowedExtensions = ['png', 'jpg', 'gif', 'jpeg'];
+                if (element.files.length > 0) {
+                    var file = element.files[0];
+                    var extension = file.type.split("/").pop().toLowerCase();
+                    if (allowedExtensions.indexOf(extension) === -1) {
+                        deleteImage(element.id)
+                        return false;
+                    }
+                    else {
+                        if (element.id === 'ProfilePicture') {
+                            document.getElementById('profile-image').src = URL.createObjectURL(file)
+                            $("#profile-image-upload").removeClass('d-none');
+                        }
+                        return true;
+                    }
+                }
+                return true;
+            });
+
+            $('#user-register-form').validate({
+                rules: {
+                    Email: {
+                        required: true,
+                        email: true,
+                        remote: function () {
+
+                            return {
+                                url: '/User/CheckUniqueEmail',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    email: function () {
+                                        return $('#Email').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    Password: {
+                        required: true,
+                        minlength: 6
+                    },
+                    UserName: {
+                        required: true,
+                        minlength: 3,
+                        remote: function () {
+                            return {
+                                url: '/User/CheckUniqueUserName',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    username: function () {
+                                        return $('#UserName').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    ProfilePicture: {
+                        validExtension: true
+                    },
+                    ClientId: {
+                        required: true,
+                        remote: function () {
+                            return {
+                                url: '/User/CheckClientAssign',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    clientId: function () {
+                                        return $('#ClientId').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    StoreIds: {
+                        required: true,
+                    },
+                },
+                messages: {
+                    Email: {
+                        required: "Please enter a email address",
+                        email: "Please enter a vaild email address",
+                        remote: "This email address is already registered."
+                    },
+                    Password: {
+                        required: "Please provide a password",
+                        minlength: "Your password must be at least 6 characters long"
+                    },
+                    UserName: {
+                        required: "Please enter a username",
+                        email: "Your username must be at least 3 characters long",
+                        remote: "This user name is already registered."
+                    },
+                    ProfilePicture: {
+                        validExtension: "File must be JPG, GIF or PNG",
+                    },
+                    ClientId: {
+                        required: "Please select client",
+                        remote: "This client is already assigned to other user."
+                    },
+                    StoreIds: {
+                        required: "Please select stores"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('#ClientId').on('change', function () {
+                $(this.form).valid();
+            });
+        });
+
+        function deleteImage(id) {
+            if (id === 'ProfilePicture') {
+                $('#ProfilePicture').val('');
+                $('#FileName').val('');
+                document.getElementById('profile-image').src = ''
+                $("#profile-image-upload").addClass('d-none');
+            }
+        }
+
+        if (document.getElementById('ProfilePicture') != null) {
+            document.getElementById('ProfilePicture').onchange = function (e) {
+                $("#ProfilePicture").blur().focus();
+                if (this.files.length === 0) {
+                    deleteImage('ProfilePicture');
+                }
+            };
+        }
+
+
+        function onImageClick(url) {
+            $('#preview-image').attr('src', url);
+            $("#preview-modal").show();
+        }
+
+        function onModalClose() {
+            $('#preview-image').attr('src', '');
+            $("#preview-modal").hide();
+        }
+    </script>
+}

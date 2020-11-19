@@ -1,0 +1,201 @@
+﻿@model EMenuApplication.ViewModels.MenuSchedule_VM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Menu Schedule</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="MenuSchedule">Menu Schedules</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Save", "MenuSchedule", FormMethod.Post, new { role = "form", id = "menu-schedule-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"] </h3>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ConceptId, "Select Concept")
+                                            @Html.DropDownListFor(m => m.ConceptId, new SelectList(ViewBag.ConceptsList, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.StoreId, "Select Store")
+                                            @Html.DropDownListFor(m => m.StoreId, new SelectList(ViewBag.StoresList, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Code, "Code")
+                                            @Html.TextBoxFor(m => m.Code, new { placeholder = "Enter code", @class = "form-control data-mask-alphanum", autocomplete = "off", maxlength = "64" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.MenuId, "Menu")
+                                            @Html.DropDownListFor(m => m.MenuId, new SelectList(ViewBag.Menus, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.DateRange, "Start-End date")
+                                            @Html.TextBoxFor(m => m.DateRange, new { placeholder = "Select start date", @class = "form-control date-range-picker-past-date-disable", autocomplete = "off", })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Status, "Is Active?")
+                                            @Html.CheckBoxFor(m => m.Status, new { @checked = true, @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        @if (Model != null && Model.Id > 0)
+                                        {
+                                            <div class="form-group">
+                                                <img src="@String.Format("data:image/png;base64,{0}",Convert.ToBase64String(Model.QRCode))" height="300" width="300" alt="QR Code" />
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="MenuSchedule" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#menu-schedule-form').validate({
+                rules: {
+                    StoreId: {
+                        required: true,
+                    },
+                    ConceptId: {
+                        required: true,
+                    },
+                    Code: {
+                        required: true,
+                        remote: function () {
+                            return {
+                                url: '/MenuSchedule/CheckUniqueCode',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    code: function () {
+                                        return $('#Code').val();
+                                    },
+                                    conceptId: function () {
+                                        return $('#ConceptId').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    MenuId: {
+                        required: true,
+                    },
+                },
+                messages: {
+                    StoreId: {
+                        required: "Please select a store",
+                    },
+                    ConceptId: {
+                        required: "Please select a concept",
+                    },
+                    Code: {
+                        required: "Please enter a code",
+                        remote: "This code is already taken"
+                    },
+                    MenuId: {
+                        required: "Please select menu",
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('#ConceptId').on('change', function () {
+                var conceptId = $("#ConceptId").val();
+                var url = "/MenuSchedule/GetMenuList";
+                $.getJSON(url, { conceptId: conceptId }, function (data) {
+                    var item = "";
+                    $("#MenuId").empty();
+                    $.each(data, function (i, menu) {
+                        item += '<option value="' + menu.value + '">' + menu.text + '</option>'
+                    });
+                    $("#MenuId").html(item);
+                });
+
+                $(this.form).valid();
+            });
+        });
+    </script>
+}

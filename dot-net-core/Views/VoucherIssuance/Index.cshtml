@@ -1,0 +1,203 @@
+﻿@model EMenuApplication.ViewModels.VoucherIssuance_VM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Voucher Issuance</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="VoucherIssuance">Voucher Issuance</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Save", "VoucherIssuance", FormMethod.Post, new { role = "form", id = "voucher-issuance-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"] </h3>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.VoucherId, "Voucher")
+                                                @Html.DropDownListFor(m => m.VoucherId, new SelectList(ViewBag.VoucherList, "Value", "Text"), new { @class = "form-control select2" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.CustomerId, "Customer")
+                                            @Html.DropDownListFor(m => m.CustomerId, new SelectList(ViewBag.CustomerList, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.ReasonCategoryId, "Reason Category")
+                                                @Html.DropDownListFor(m => m.ReasonCategoryId, new SelectList(ViewBag.CategoryList, "Value", "Text"), new { @class = "form-control select2" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ReasonSubCategoryId, "Reason Subcategory")
+                                            @Html.DropDownListFor(m => m.ReasonSubCategoryId, new SelectList(ViewBag.SubCategoryList, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.Label("Source")
+                                            <div class="form-group clearfix">
+                                                <div class="">
+                                                    @Html.RadioButtonFor(m => m.Source, "1")
+                                                    <label for="IsAmountType">Pre-defined</label>
+                                                </div>
+                                                <div class="">
+                                                    @Html.RadioButtonFor(m => m.Source, "2")
+                                                    <label for="IsPercentageType">CXE</label>
+                                                </div>
+                                                <div class="">
+                                                    @Html.RadioButtonFor(m => m.Source, "3")
+                                                    <label for="IsHashOfPax">Campaign</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group" id="divCampaign">
+                                            @Html.LabelFor(m => m.CampaignText, "Campaign ID")
+                                            @Html.TextBoxFor(m => m.CampaignText, new { placeholder = "Enter campaign id", @class = "form-control", autocomplete = "off", maxlength = "10" })
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="VoucherIssuance" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            if ($('input[type=radio][name=Source]:checked').val() == 3) {
+                $("#divCampaign").removeClass('d-none');
+            }
+            else {
+                $("#divCampaign").addClass('d-none');
+            }
+            $('#voucher-issuance-form').validate({
+                rules: {
+                    VoucherId: {
+                        required: true,
+                    },
+                    CustomerId: {
+                        required: true,
+                    },
+                    Source: {
+                        required: true,
+                    },
+                },
+                messages: {
+                    VoucherId: {
+                        required: "Please select a voucher",
+                    },
+                    CustomerId: {
+                        required: "Please select a customer",
+                    },
+                    Source: {
+                        required: "Please select source",
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('input[type=radio][name=Source]').change(function () {
+                if (this.value == 3) {
+                    $("#divCampaign").removeClass('d-none');
+                }
+                else {
+                    $("#divCampaign").addClass('d-none');
+                }
+            });
+
+            $('#ReasonCategoryId').on('change', function () {
+                bindSubCategory();
+            });
+        });
+
+
+        function bindSubCategory() {
+            $("#ReasonSubCategoryId").empty();
+            var categoryId = $("#ReasonCategoryId").val();
+
+            var url = "/VoucherIssuance/GetSubCategoryByCategoryId";
+            $.getJSON(url, { categoryId: categoryId }, function (data) {
+                var item = "";
+                $.each(data, function (i, subCategory) {
+                    item += '<option value="' + subCategory.value + '">' + subCategory.text + '</option>'
+                });
+
+                $("#ReasonSubCategoryId").html(item);
+            });
+        }
+
+    </script>
+}
+
+

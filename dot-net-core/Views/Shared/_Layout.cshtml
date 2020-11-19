@@ -1,0 +1,524 @@
+﻿@using Microsoft.AspNetCore.Http;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>E-Menu | Admin Panel</title>
+
+    <!-- Font Awesome Icons -->
+    <link href="~/LTE/plugin/fontawesome-free/css/all.min.css" rel="stylesheet" />
+
+    <!-- IonIcons -->
+    <link href="~/LTE/css/ionicons.min.css" rel="stylesheet" />
+
+    <!-- moment -->
+    <script src="~/LTE/plugin/moment/moment.min.js"></script>
+
+    <!-- daterange picker -->
+    <link href="~/LTE/plugin/daterangepicker/daterangepicker.css" rel="stylesheet" />
+
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link href="~/LTE/plugin/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Toastr -->
+    <link href="~/LTE/plugin/toastr/toastr.min.css" rel="stylesheet" />
+
+    <!-- DataTables -->
+    <link href="~/LTE/plugin/datatables-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/LTE/plugin/datatables-rowreorder/css/rowReorder.bootstrap4.min.css" rel="stylesheet" />
+
+    <!-- Select2 -->
+    <link href="~/LTE/plugin/select2/css/select2.css" rel="stylesheet" />
+
+    <!-- Bootstrap4 Duallistbox -->
+    <link href="~/LTE/plugin/bootstrap4-duallistbox/bootstrap-duallistbox.min.css" rel="stylesheet" />
+
+    <!-- Theme style -->
+    <link href="~/LTE/css/adminlte.css" rel="stylesheet" />
+
+    <!-- Bootstrap Color Picker -->
+    <link href="~/LTE/plugin/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet" />
+
+    <!-- summernote -->
+    <link href="~/LTE/plugin/summernote/summernote-bs4.css" rel="stylesheet" />
+
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <!-- Custom css -->
+    <link href="~/custom.css" rel="stylesheet" />
+
+
+</head>
+<!--
+BODY TAG OPTIONS:
+=================
+Apply one or more of the following classes to to the body tag
+to get the desired effect
+|---------------------------------------------------------|
+|LAYOUT OPTIONS | sidebar-collapse                        |
+|               | sidebar-mini                            |
+|---------------------------------------------------------|
+-->
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+
+                <!-- Log out -->
+                @if (EMenuApplication.AppContext.Current.Session.GetInt32("IsSuperAdmin") == 1)
+                {
+
+                    <li class="nav-item">
+                        <a asp-action="Logout" asp-controller="Admin" class="nav-link">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        @await Component.InvokeAsync("ConceptList")
+                    </li>
+
+                    <li class="nav-item">
+                        <a asp-action="Logout" asp-controller="Login" class="nav-link">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </li>
+                }
+
+
+            </ul>
+        </nav>
+
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="/Dashboard" class="brand-link">
+
+                <img src="~/Img/AdminLTELogo.png" alt="Logo" class="brand-image img-circle elevation-3"
+                     style="opacity: .8">
+                <span class="brand-text font-weight-light">E-menu Admin</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        @{
+                            var path = Context.Session.GetString("imgpath");
+                            <img src="@path" class="img-circle elevation-2" alt="User Image"
+                                 onerror="this.onerror=null;this.src='/default.png'">
+                        }
+
+                    </div>
+                    <div class="info">
+                        @{
+
+                            string fullname = Context.Session.GetString("fullname");
+                            <a href="javascript:void(0);" class="d-block">@fullname</a>
+                        }
+
+                    </div>
+                </div>
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                        @if (EMenuApplication.AppContext.Current.Session.GetInt32("IsSuperAdmin") == 1)
+                        {
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="Client" class="nav-link">
+                                    <i class="nav-icon fas fa-user"></i>
+                                    <p>
+                                        Client
+                                    </p>
+                                </a>
+                            </li>
+
+                            //Concept
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="Concepts" class="nav-link">
+                                    <i class="nav-icon fas fa-building"></i>
+                                    <p>
+                                        Concept
+                                    </p>
+                                </a>
+                            </li>
+
+                            //Store
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="Stores" class="nav-link">
+                                    <i class="nav-icon fas fa-store-alt"></i>
+                                    <p>Store</p>
+                                </a>
+                            </li>
+
+                            ////Users
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="User" class="nav-link">
+                                    <i class="nav-icon fas fa-users"></i>
+                                    <p>
+                                        Users
+                                    </p>
+                                </a>
+                            </li>
+
+                            // Region
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="Region" class="nav-link">
+                                    <i class="nav-icon fas fa-globe "></i>
+                                    <p>
+                                        Region
+                                    </p>
+                                </a>
+                            </li>
+
+                            // Country
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="Country" class="nav-link">
+                                    <i class="nav-icon fas fa-globe "></i>
+                                    <p>
+                                        Country
+                                    </p>
+                                </a>
+                            </li>
+
+                        }
+                        else
+                        {
+                            @* Dashboard *@
+                            <li class="nav-item">
+                                <a asp-action="Index" asp-controller="Dashboard" class="nav-link">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>
+                                        Dashboard
+                                    </p>
+                                </a>
+                            </li>
+
+                            @* Users *@
+                            @if (EMenuApplication.AppContext.Current.Session.GetInt32("IsAdmin") == 1)
+                            {
+                                <li class="nav-item">
+                                    <a asp-action="List" asp-controller="User" class="nav-link">
+                                        <i class="nav-icon fas fa-users"></i>
+                                        <p>
+                                            Users
+                                        </p>
+                                    </a>
+                                </li>
+                            }
+
+                            @* Item tags *@
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="ItemTag" class="nav-link">
+                                    <i class="nav-icon fas fa-tag"></i>
+                                    <p>
+                                        Item Tags
+                                    </p>
+                                </a>
+                            </li>
+
+                            @* Categories *@
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="Category" class="nav-link">
+                                    <i class="nav-icon fas fa-list"></i>
+                                    <p>
+                                        Categories
+                                    </p>
+                                </a>
+                            </li>
+
+                            @* Menu Items *@
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="MenuItem" class="nav-link">
+                                    <i class="nav-icon fa fa-th-list"></i>
+                                    <p>
+                                        Menu Items
+                                    </p>
+                                </a>
+                            </li>
+
+                            @* Menu *@
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="Menu" class="nav-link">
+                                    <i class="nav-icon fas fa-bars"></i>
+                                    <p>
+                                        Menu
+                                    </p>
+                                </a>
+                            </li>
+
+                            @* Menu Schedule *@
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="MenuSchedule" class="nav-link">
+                                    <i class="nav-icon fas fa-calendar"></i>
+                                    <p>
+                                        Menu Schedule
+                                    </p>
+                                </a>
+                            </li>
+
+                            @* Survey *@
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="Survey" class="nav-link">
+                                    <i class="nav-icon fas fa-file"></i>
+                                    <p>
+                                        Survey Results
+                                    </p>
+                                </a>
+                            </li>
+
+
+                            @* Theme *@
+                            <li class="nav-item">
+                                <a asp-action="List" asp-controller="ConceptTheme" class="nav-link">
+                                    <i class="nav-icon fas fa-magic"></i>
+                                    <p>
+                                        Concept Theme
+                                    </p>
+                                </a>
+                            </li>
+
+                            @if (EMenuApplication.AppContext.Current.Session.GetInt32("IsAdmin") == 1)
+                            {
+                                <li class="nav-item">
+                                    <a asp-action="List" asp-controller="VoucherReasonCategory" class="nav-link">
+                                        <i class="nav-icon fas fa-list"></i>
+                                        <p>
+                                            Voucher Category
+                                        </p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a asp-action="List" asp-controller="VoucherReasonSubCategory" class="nav-link">
+                                        <i class="nav-icon fas fa-list"></i>
+                                        <p>
+                                            Voucher Subcategory
+                                        </p>
+                                    </a>
+                                </li>
+                            }
+
+                            @if (EMenuApplication.AppContext.Current.Session.GetInt32("IsAdmin") == 1)
+                            {
+                                @* Voucher setup *@
+                                <li class="nav-item">
+                                    <a asp-action="List" asp-controller="VoucherSetup" class="nav-link">
+                                        <i class="nav-icon fas fa-gift"></i>
+                                        <p>
+                                            Voucher Setup
+                                        </p>
+                                    </a>
+                                </li>
+                            }
+
+                            @if (EMenuApplication.AppContext.Current.Session.GetInt32("HasVoucherIssuancePermission") == 1
+                            || EMenuApplication.AppContext.Current.Session.GetInt32("HasAllowVoucherApprovalPermission") == 1 || EMenuApplication.AppContext.Current.Session.GetInt32("IsAdmin") == 1)
+                            {
+                                @* Voucher setup *@
+                                <li class="nav-item">
+                                    <a asp-action="List" asp-controller="VoucherIssuance" class="nav-link">
+                                        <i class="nav-icon fas fa-gift"></i>
+                                        <p>
+                                            Voucher Issuance
+                                        </p>
+                                    </a>
+                                </li>
+                            }
+
+                            @* Settings *@
+                            @if (EMenuApplication.AppContext.Current.Session.GetInt32("IsAdmin") == 1)
+                            {
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-cog"></i>
+                                        <p>
+                                            Settings
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+
+                                    <ul class="nav nav-treeview">
+
+                                        @* Currency *@
+                                        <li class="nav-item">
+                                            <a asp-action="List" asp-controller="Currency" class="nav-link">
+                                                <i class="nav-icon fas fa-dollar-sign"></i>
+                                                <p>
+                                                    Currency
+                                                </p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+
+                            }
+
+                            @* Users *@
+
+
+
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        @RenderBody()
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; @DateTime.Now.Year</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 3.0.1
+            </div>
+        </footer>
+    </div>
+    <!-- ./wrapper -->
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+    <script src="~/LTE/plugin/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="~/LTE/plugin/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Toastr -->
+    <script src="~/LTE/plugin/toastr/toastr.min.js"></script>
+
+    <!-- DataTables -->
+    <script src="~/LTE/plugin/datatables/jquery.dataTables.js"></script>
+    <script src="~/LTE/plugin/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <script src="~/LTE/plugin/datatables-rowreorder/js/dataTables.rowReorder.min.js"></script>
+
+    <!-- jquery-validation -->
+    <script src="~/LTE/plugin/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/LTE/plugin/jquery-validation/additional-methods.min.js"></script>
+
+    <!-- bs-custom-file-input -->
+    <script src="~/LTE/plugin/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+
+    <!-- Select2 -->
+    <script src="~/LTE/plugin/select2/js/select2.full.min.js"></script>
+
+    <!-- Bootstrap4 Duallistbox -->
+    <script src="~/LTE/plugin/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+    <!-- bootstrap color picker -->
+    <script src="~/LTE/plugin/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+
+    <!-- InputMask -->
+    <script src="~/LTE/plugin/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+
+    <!-- AdminLTE -->
+    <script src="~/LTE/js/adminlte.js"></script>
+
+    <!-- Summernote -->
+    <script src="~/LTE/plugin/summernote/summernote-bs4.min.js"></script>
+
+    <!-- date-range-picker -->
+    <script src="~/LTE/plugin/daterangepicker/daterangepicker.js"></script>
+
+    <script>
+         $(document).ready(function () {
+             $('#MainConceptId').change(function () {
+                 var id = $('#MainConceptId').val();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ChangeConcept", "Base")' + '/' + id,
+                    success: function (result) {
+                        location.reload();
+                    },
+                    error: function (data) { alert('Error'); }
+                });
+            })
+        })
+
+
+        $(function () {
+            $('.select2').select2()
+
+            $('.duallistbox').bootstrapDualListbox()
+
+            $('.data-mask-decimal').inputmask({
+                alias: 'numeric',
+                allowMinus: false,
+                digits: 2,
+                max: 99999.99
+            });
+
+            // summernote - editor
+            $('.textarea-editor').summernote({
+                height: 250,
+                disableResizeEditor: true,
+            })
+
+            // Add-Edit toast message
+            var status = '@TempData["Status"]';
+            var message = '@TempData["Message"]';
+            if (message != "" && message != null && message != undefined) {
+                if (status == 1) {
+                    toastr.success(message)
+                } else {
+                    toastr.error(message)
+                }
+            }
+
+            var d = new Date();
+            d.setHours(00);
+            d.setMinutes(00);
+            // only alpha-numeric
+            $('.data-mask-alphanum').inputmask("*", { greedy: false, repeat: 24 });
+
+            //Date range picker
+            $('.date-range-picker-past-date-disable').daterangepicker({
+                minDate: d,
+                timePicker: true,
+                timePickerIncrement: 30,
+                locale: {
+                    format: 'MM/DD/YYYY hh:mm A'
+                }
+            });
+
+            //color picker with addon
+            $('.my-colorpicker2').colorpicker()
+
+            $('.my-colorpicker2').on('colorpickerChange', function (event) {
+                $('.my-colorpicker2 .fa-square').css('color', event.color.toString());
+            });
+        });
+
+
+    </script>
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

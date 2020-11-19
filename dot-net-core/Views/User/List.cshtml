@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Users</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item active">Users</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">List</h3>
+                            <a asp-action="Index" asp-controller="User" role="button" class="btn btn-primary float-right">Add</a>
+                        </div>
+                        <div class="card-body">
+                            <table id="userList" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>User Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Client Name</th>
+                                        <th class="no-sort text-center">Active</th>
+                                        <th class="no-sort text-center">Action</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-delete-user" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content bg-danger">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the selected user?</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-light" data-dismiss="modal" onclick="onDeleteConfirm()">Yes</button>
+                <button type="button" class="btn btn-outline-light" data-dismiss="modal" onclick="onDeleteNo()">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/custom-script/User.js"></script>
+}

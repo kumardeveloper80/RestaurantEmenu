@@ -1,0 +1,245 @@
+﻿@model EMenuApplication.ViewModels.Menu_VM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Menu</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="Menu">Menu</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Save", "Menu", FormMethod.Post, new { role = "form", id = "menu-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"] </h3>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ConceptId, "Select Concept")
+                                            @Html.DropDownListFor(m => m.ConceptId, new SelectList(ViewBag.ConceptsList, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Code, "Code")
+                                            @Html.TextBoxFor(m => m.Code, new { placeholder = "Enter code", @class = "form-control data-mask-alphanum", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Name, "Name")
+                                            @Html.TextBoxFor(m => m.Name, new { placeholder = "Enter name", @class = "form-control", autocomplete = "off", maxlength = "64" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Status, "Is Active?")
+                                            @Html.CheckBoxFor(m => m.Status, new { @checked = true, @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.CategoryId, "Filter by Category")
+                                            @Html.DropDownListFor(m => m.CategoryId, new SelectList(ViewBag.Categories, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.MenuItemIds, "Menu Items")
+                                            <select asp-for="MenuItemIds" asp-items='new SelectList(ViewBag.MenuItems,"Value","Text")' class="form-control duallistbox" multiple="multiple" data-placeholder="Select a Menu Items"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="Menu" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var menuItemDrpn = $('.duallistbox').bootstrapDualListbox();
+        $(document).ready(function () {
+            
+            $.validator.addMethod("requiredMenuItem", function (value, element) {
+                if (element.length == 0) {
+                    return false
+                }
+                return true;
+            });
+
+            $('#menu-form').validate({
+                rules: {
+                    ConceptId: {
+                        required: true,
+                    },
+                    Code: {
+                        required: true,
+                        remote: function () {
+                            return {
+                                url: '/Menu/CheckUniqueCode',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    code: function () {
+                                        return $('#Code').val();
+                                    },
+                                    conceptId: function () {
+                                        return $('#ConceptId').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    Name: {
+                        required: true,
+                        remote: function () {
+                            return {
+                                url: '/Menu/CheckUniqueName',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    Name: function () {
+                                        return $('#Name').val();
+                                    },
+                                    conceptId: function () {
+                                        return $('#ConceptId').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    MenuItemIds_helper2: {
+                        requiredMenuItem: true
+                    },
+                },
+                messages: {
+                    ConceptId: {
+                        required: "Please select a concept",
+                    },
+                    Code: {
+                        required: "Please enter a code",
+                        remote: "This code is already taken"
+                    },
+                    Name: {
+                        required: "Please enter a name",
+                        remote: "This name is already taken"
+                    },
+                    MenuItemIds_helper2: {
+                        requiredMenuItem: "Please select menu items",
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('#ConceptId').on('change', function () {
+                var conceptId = $("#ConceptId").val();
+                var url = "/Menu/GetMenuItemList";
+                $.getJSON(url, { conceptId: conceptId }, function (data) {
+                    bindOptionMultiSelect(data.menuItems);
+                    var item = "";
+                    if (data.categories.length > 0) {
+                        $("#CategoryId").empty();
+                        item = '<option value="0">All</option>'
+                        $.each(data.categories, function (i, category) {
+                            item += '<option value="' + category.value + '">' + category.text + '</option>'
+                        });
+                        $("#CategoryId").html(item);
+                    } else {
+                        $("#CategoryId").html(item);
+                    }
+
+                });
+                $(this.form).valid();
+            });
+
+            $('#CategoryId').on('change', function () {
+                var conceptId = $("#ConceptId").val();
+                var categoryId = $("#CategoryId").val();
+                var url = "/Menu/GetMenuItemByCateogry";
+                $.getJSON(url, { conceptId: conceptId, categoryId: categoryId }, function (data) {
+                    bindOptionMultiSelect(data)
+                });
+            });
+        });
+
+        function bindOptionMultiSelect(data) {
+            var item = "";
+            debugger;
+            $("#MenuItemIds").empty();
+            $("#bootstrap-duallistbox-nonselected-list_MenuItemIds").empty();
+            $("#bootstrap-duallistbox-selected-list_MenuItemIds").empty();
+            $.each(data, function (i, menuItem) {
+                item += '<option value="' + menuItem.value + '">' + menuItem.text + '</option>'
+            });
+
+            $("#MenuItemIds").html(item);
+            $("#bootstrap-duallistbox-nonselected-list_MenuItemIds").html(item);
+            menuItemDrpn.bootstrapDualListbox('refresh');
+        }
+    </script>
+}

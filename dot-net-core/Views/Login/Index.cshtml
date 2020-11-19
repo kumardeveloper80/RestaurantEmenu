@@ -1,0 +1,142 @@
+﻿@model EMenuApplication.ViewModels.Login_VM
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<div class="card" id="login">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Sign in to start your session</p>
+
+        @using (Html.BeginForm("Authentication", "Login", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="input-group mb-3">
+                @Html.TextBoxFor(m => m.Email, new { placeholder = "Email", @class = "form-control" })
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group mb-3">
+                @Html.PasswordFor(m => m.Password, new { placeholder = "Password", @class = "form-control" })
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-8">
+                    <div class="icheck-primary">
+                        @Html.CheckBoxFor(m => m.RememberMe)
+                        @Html.LabelFor(m => m.RememberMe)
+                    </div>
+                </div>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div id="register" class="card" style="display:none;">
+    <div class="card-body register-card-body">
+        <p class="login-box-msg">Register a new membership</p>
+
+        <form action="../../index.html" method="post">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Full name">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-user"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="email" class="form-control" placeholder="Email">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="password" class="form-control" placeholder="Password">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="password" class="form-control" placeholder="Retype password">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="icheck-primary">
+                        <input type="checkbox" id="agreeTerms" name="terms" value="agree">
+                        <label for="agreeTerms">
+                            I agree to the <a href="#">terms</a>
+                        </label>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+
+
+        <a href="javescript:void(0);" class="text-center" onclick="showTabs('login');">I already have a membership</a>
+    </div>
+    <!-- /.form-box -->
+</div>
+
+<div id="recover" class="card" style="display:none;">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">You are only one step a way from your new password, recover your password now.</p>
+
+        <form action="login.html" method="post">
+            <div class="input-group mb-3">
+                <input type="password" class="form-control" placeholder="Password">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="password" class="form-control" placeholder="Confirm Password">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary btn-block">Change password</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+        <p class="mt-3 mb-1">
+            <a href="javascript:void(0);" onclick="showTabs('login');">Login</a>
+        </p>
+    </div>
+</div>

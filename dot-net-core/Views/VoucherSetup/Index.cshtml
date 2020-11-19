@@ -1,0 +1,305 @@
+﻿@model EMenuApplication.ViewModels.VoucherSetup_VM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Voucher Setup</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="VoucherSetup">Voucher Setup</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Save", "VoucherSetup", FormMethod.Post, new { role = "form", id = "voucher-setup-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"] </h3>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Name, "Name")
+                                            @Html.TextBoxFor(m => m.Name, new { placeholder = "Enter name", @class = "form-control", autocomplete = "off", maxlength = "64" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Value, "Value")
+                                            @Html.TextBoxFor(m => m.Value, new
+                                            {
+                                                placeholder = "Enter price",
+                                                @class = "form-control",
+                                                autocomplete = "off",
+                                                @onkeypress = "return isNumberDecimalKey(event)",
+                                                maxlength = "10"
+                                            })
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.IsMultipleTimeUsage, "Is Multiple Time Usage?")
+                                            @Html.CheckBoxFor(m => m.IsMultipleTimeUsage, new { @checked = true, @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Status, "Is Active?")
+                                            @Html.CheckBoxFor(m => m.Status, new { @checked = true, @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.StartDate, "Start Date")
+                                            @Html.TextBoxFor(m => m.StartDate, new { placeholder = "Select start date", @class = "form-control", autocomplete = "off", type = "date" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.EndDate, "End Date")
+                                            @Html.TextBoxFor(m => m.EndDate, new { placeholder = "Select end date", @class = "form-control", autocomplete = "off", type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.StoreIds, "Select Store")
+                                            <select asp-for="StoreIds" asp-items='new SelectList(ViewBag.StoresList,"Value","Text")' class="form-control select2" multiple="multiple" data-placeholder="Select a Stores"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.SurveyIds, "Select Survey")
+                                            <select asp-for="SurveyIds" asp-items='new SelectList(ViewBag.SurveyList,"Value","Text")' class="form-control select2" multiple="multiple" data-placeholder="Select a Survey"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Description, "Description")
+                                            @Html.TextAreaFor(m => m.Description, new { placeholder = "Enter description", rows = 5, @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Limitations, "Limitations")
+                                            @Html.TextAreaFor(m => m.Limitations, new { placeholder = "Enter limitations", rows = 5, @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Terms, "Terms")
+                                            @Html.TextAreaFor(m => m.Terms, new { placeholder = "Enter terms", rows = 5, @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.Label("Type")
+                                            <div class="form-group clearfix">
+                                                <div class="">
+                                                    @Html.RadioButtonFor(m => m.Type, "1")
+                                                    <label for="IsAmountType">Amount</label>
+                                                </div>
+                                                <div class="">
+                                                    @Html.RadioButtonFor(m => m.Type, "2")
+                                                    <label for="IsPercentageType">Percentage</label>
+                                                </div>
+                                                <div class="">
+                                                    @Html.RadioButtonFor(m => m.Type, "3")
+                                                    <label for="IsHashOfPax">#of Pax</label>
+                                                </div>
+                                                <div class="">
+                                                    @Html.RadioButtonFor(m => m.Type, "4")
+                                                    <label for="IsItemType">Item</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group d-none" id="divMenuItem">
+                                            @Html.LabelFor(m => m.MenuItemIds, "Select Menu Item")
+                                            <select asp-for="MenuItemIds" asp-items='new SelectList(ViewBag.MenuItemList,"Value","Text")' class="form-control select2" multiple="multiple" data-placeholder="Select a Menu Items"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="VoucherSetup" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            if ($('input[type=radio][name=Type]:checked').val() == 4) {
+                $("#divMenuItem").removeClass('d-none');
+            }
+            else {
+                $("#divMenuItem").addClass('d-none');
+            }
+            $('#voucher-setup-form').validate({
+                rules: {
+                    StoreIds: {
+                        required: true,
+                    },
+                    Name: {
+                        required: true,
+                    },
+                    Value: {
+                        required: true,
+                    },
+                    StartDate: {
+                        required: true,
+                    },
+                    Type: {
+                        required: true,
+                    },
+                },
+                messages: {
+                    StoreIds: {
+                        required: "Please select a store",
+                    },
+                    Name: {
+                        required: "Please enter a name",
+                    },
+                    Value: {
+                        required: "Please enter a value",
+                    },
+                    StartDate: {
+                        required: "Please enter a start date",
+                    },
+                    Type: {
+                        required: "Please select type",
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('input[type=radio][name=Type]').change(function () {
+                if (this.value == 4) {
+                    bindMenuItem();
+                }
+                else {
+                    $("#MenuItemIds").empty();
+                    $("#divMenuItem").addClass('d-none');
+                }
+            });
+
+            $('#StoreIds').on('change', function () {
+                if ($('input[type=radio][name=Type]:checked').val() == 4) {
+                    bindMenuItem();
+                }
+            });
+        });
+
+        function isNumberDecimalKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46)
+                return false;
+            else {
+                var len = document.getElementById("Price").value.length;
+                var index = document.getElementById("Price").value.indexOf('.');
+
+                if (index > 0 && charCode == 46) {
+                    return false;
+                }
+                if (index > 0) {
+                    var CharAfterdot = (len + 1) - index;
+                    if (CharAfterdot > 3) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function bindMenuItem() {
+            $("#MenuItemIds").empty();
+            var list = $("#StoreIds").val();
+            var storeIds = null;
+
+            if (list.length > 0) {
+                storeIds = list.join();
+            }
+
+            var url = "/VoucherSetup/GetMenuItemListByStoreId";
+            $.getJSON(url, { storeIds: storeIds }, function (data) {
+                var item = "";
+                $.each(data, function (i, menuItem) {
+                    item += '<option value="' + menuItem.value + '">' + menuItem.text + '</option>'
+                });
+
+                $("#MenuItemIds").html(item);
+            });
+            $("#divMenuItem").removeClass('d-none');
+        }
+
+    </script>
+}
+

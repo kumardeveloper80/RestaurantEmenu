@@ -1,0 +1,613 @@
+﻿@model EMenuApplication.ViewModels.MenuItem_VM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Menu Item</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Dashboard">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="List" asp-controller="MenuItem">Menu Items</a>
+                        </li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm("Save", "MenuItem", FormMethod.Post, new { role = "form", id = "menu-item-form", enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        @Html.HiddenFor(m => m.ThumbnailImageName)
+                        @Html.HiddenFor(m => m.OverLayImageName)
+                        @Html.HiddenFor(m => m.LargeImageName)
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">@ViewData["Title"] </h3>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ConceptIds, "Select Concept")
+                                            <select asp-for="ConceptIds" asp-items='new SelectList(ViewBag.ConceptsList,"Value","Text")' class="form-control select2" multiple="multiple" data-placeholder="Select a Concepts"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Status, "Is Active?")
+                                            @Html.CheckBoxFor(m => m.Status, new { @checked = true, @class = "form-control w-5" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.PLU, "PLU")
+                                            @Html.TextBoxFor(m => m.PLU, new { placeholder = "Enter PLU", @class = "form-control", autocomplete = "off", maxlength = "24" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Name, "Name")
+                                            @Html.TextBoxFor(m => m.Name, new { placeholder = "Enter name", @class = "form-control", autocomplete = "off", maxlength = "64" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.CategoryId, "Category")
+                                            @Html.DropDownListFor(m => m.CategoryId, new SelectList(ViewBag.Categories, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.ItemTagsId, "Item Tags")
+                                            <select asp-for="ItemTagsId" asp-items='new SelectList(ViewBag.ItemTags,"Value","Text")' class="form-control select2" multiple="multiple" data-placeholder="Select a Item Tags"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.CurrencyId, "Currency")
+                                            @Html.DropDownListFor(m => m.CurrencyId, new SelectList(ViewBag.Currency, "Value", "Text"), new { @class = "form-control select2" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Price, "Price")
+                                            @Html.TextBoxFor(m => m.Price, new { placeholder = "Enter price", @class = "form-control", autocomplete = "off",
+                                           @onkeypress = "return isNumberDecimalKey(event)",
+                                           maxlength ="10" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.LabelEN, "Label(EN)")
+                                            @Html.TextBoxFor(m => m.LabelEN, new { placeholder = "Enter en-label", @class = "form-control", autocomplete = "off", maxlength = "224" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.LabelAR, "Label(AR)")
+                                            @Html.TextBoxFor(m => m.LabelAR, new { placeholder = "Enter ar-label", @class = "form-control", autocomplete = "off", maxlength = "224" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.DetailsEN, "Details(EN)")
+                                            @Html.TextAreaFor(m => m.DetailsEN, new { placeholder = "Enter en-details", rows = 5, @class = "form-control textarea-editor", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.DetailsAR, "Details(AR)")
+                                            @Html.TextAreaFor(m => m.DetailsAR, new { placeholder = "Enter ar-details", rows = 5, @class = "form-control textarea-editor", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.LargeDetailsEN, "Large details(EN)")
+                                            @Html.TextAreaFor(m => m.LargeDetailsEN, new { placeholder = "Enter en-details", rows = 5, @class = "form-control textarea-editor", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.LargeDetailsAR, "Large details(AR)")
+                                            @Html.TextAreaFor(m => m.LargeDetailsAR, new { placeholder = "Enter ar-details", rows = 5, @class = "form-control textarea-editor", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.CommentsEN, "Comments(EN)")
+                                            @Html.TextAreaFor(m => m.CommentsEN, new { placeholder = "Enter en-comments", rows = 5, @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.CommentsAR, "Comments(AR)")
+                                            @Html.TextAreaFor(m => m.CommentsAR, new { placeholder = "Enter ar-comments", rows = 5, @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.OverlayDetailsEN, "Overlay details(EN)")
+                                            @Html.TextAreaFor(m => m.OverlayDetailsEN, new { placeholder = "Enter en-details", rows = 5, @class = "form-control textarea-editor", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.OverlayDetailsAR, "Overlay details(AR)")
+                                            @Html.TextAreaFor(m => m.OverlayDetailsAR, new { placeholder = "Enter ar-details", rows = 5, @class = "form-control textarea-editor", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m.ThumbnailImage, "Thumbnail Image")
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input asp-for="ThumbnailImage" type="file">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <div class="fileuploader-items d-none" id="thumbnail-image-upload">
+                                                        <ul class="fileuploader-items-list">
+                                                            <li class="fileuploader-item file-type-image file-ext-png file-has-popup">
+                                                                <div class="columns">
+                                                                    <div class="column-thumbnail">
+                                                                        <div class="fileuploader-item-image">
+                                                                            @if (Model != null && Model.ThumbnailImageName != null)
+                                                                            {
+                                                                                <img id="thumbnail-image" src="~/Image/@Model.ThumbnailImageName" onclick="onImageClick(this.src)" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <img id="thumbnail-image" onclick="onImageClick(this.src)" />
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="column-actions">
+                                                                        <a href="javascript:" onclick="deleteImage('ThumbnailImage')"><i class="fas fa-trash-alt"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m.LargeImage, "Large Image")
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input asp-for="LargeImage" type="file">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <div class="fileuploader-items d-none" id="large-image-upload">
+                                                        <ul class="fileuploader-items-list">
+                                                            <li class="fileuploader-item file-type-image file-ext-png file-has-popup">
+                                                                <div class="columns">
+                                                                    <div class="column-thumbnail">
+                                                                        <div class="fileuploader-item-image">
+                                                                            @if (Model != null && Model.LargeImageName != null)
+                                                                            {
+                                                                                <img id="large-image" src="~/Image/@Model.LargeImageName" onclick="onImageClick(this.src)" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <img id="large-image" onclick="onImageClick(this.src)" />
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="column-actions">
+                                                                        <a href="javascript:" onclick="deleteImage('LargeImage')"><i class="fas fa-trash-alt"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m.OverLayImage, "Overlay Image")
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input asp-for="OverLayImage" type="file">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <div class="fileuploader-items d-none" id="overlay-image-upload">
+                                                        <ul class="fileuploader-items-list">
+                                                            <li class="fileuploader-item file-type-image file-ext-png file-has-popup">
+                                                                <div class="columns">
+                                                                    <div class="column-thumbnail">
+                                                                        <div class="fileuploader-item-image">
+                                                                            @if (Model != null && Model.OverLayImageName != null)
+                                                                            {
+                                                                                <img id="overlay-image" src="~/Image/@Model.OverLayImageName" onclick="onImageClick(this.src)" />
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <img id="overlay-image" onclick="onImageClick(this.src)" />
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="column-actions">
+                                                                        <a href="javascript:" onclick="deleteImage('OverLayImage')"><i class="fas fa-trash-alt"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a asp-action="List" asp-controller="MenuItem" role="button" class="btn btn-danger">Cancel</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div id="preview-modal" class="preview-modal">
+    <span class="close" onclick="onModalClose()">&times;</span>
+    <img class="preview-modal-content" id="preview-image">
+</div>
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+
+            if ($('#ThumbnailImageName').val() != '') {
+                $("#thumbnail-image-upload").removeClass('d-none');
+            }
+
+            if ($('#OverLayImageName').val() != '') {
+                $("#overlay-image-upload").removeClass('d-none');
+            }
+
+            if ($('#LargeImageName').val() != '') {
+                $("#large-image-upload").removeClass('d-none');
+            }
+
+            $.validator.addMethod("validExtension", function (value, element) {
+                var allowedExtensions = ['png', 'jpg', 'gif', 'jpeg'];
+                if (element.files.length > 0) {
+                    var file = element.files[0];
+                    var extension = file.type.split("/").pop().toLowerCase();
+                    if (allowedExtensions.indexOf(extension) === -1) {
+                        deleteImage(element.id)
+                        return false;
+                    }
+                    else {
+                        if (element.id === 'ThumbnailImage') {
+                            document.getElementById('thumbnail-image').src = URL.createObjectURL(file)
+                            $("#thumbnail-image-upload").removeClass('d-none');
+                        } else if (element.id === 'LargeImage') {
+                            document.getElementById('large-image').src = URL.createObjectURL(file)
+                            $("#large-image-upload").removeClass('d-none');
+                        } else if (element.id === 'OverLayImage') {
+                            document.getElementById('overlay-image').src = URL.createObjectURL(file)
+                            $("#overlay-image-upload").removeClass('d-none');
+                        }
+                        return true;
+                    }
+                }
+                return true;
+            });
+
+            $('#menu-item-form').validate({
+                rules: {
+                    ConceptIds: {
+                        required: true,
+                    },
+                    PLU: {
+                        //required: true,
+                        minlength: 3,
+                        remote: function () {
+                            return {
+                                url: '/MenuItem/CheckUniquePLU',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    plu: function () {
+                                        return $('#PLU').val();
+                                    },
+                                    conceptIds: function () {
+                                        return $('#ConceptIds').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    Name: {
+                        required: true,
+                        remote: function () {
+                            return {
+                                url: '/MenuItem/CheckUniqueName',
+                                type: "get",
+                                data: {
+                                    id: function () {
+                                        return $('#Id').val();
+                                    },
+                                    name: function () {
+                                        return $('#Name').val();
+                                    },
+                                    conceptIds: function () {
+                                        return $('#ConceptIds').val();
+                                    },
+                                },
+                                dataFilter: function (data) {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    CurrencyId: {
+                        required: true,
+                    },
+                    Price: {
+                        required: true,
+                        maxlength: false
+                    },
+                    //ItemTagsId: {
+                    //    required: true,
+                    //},
+                    CategoryId: {
+                        required: true,
+                    },
+                    ThumbnailImage: {
+                        validExtension: true
+                    },
+                    OverLayImage: {
+                        validExtension: true
+                    },
+                    LargeImage: {
+                        validExtension: true
+                    },
+                    //LabelAR: {
+                    //    required: true,
+                    //},
+                    LabelEN: {
+                        required: true,
+                    },
+                },
+                messages: {
+                    ConceptIds: {
+                        required: "Please select a concept",
+                    },
+                    PLU: {
+                        required: "Please enter a PLU",
+                        minlength: "Your PLU must be at least 3 characters long",
+                        remote: "This PLU is already taken."
+                    },
+                    Name: {
+                        required: "Please enter a name",
+                        remote: "This name is already taken"
+                    },
+                    CurrencyId: {
+                        required: "Please select currency",
+                    },
+                    Price: {
+                        required: "Please enter a price",
+                    },
+                    CategoryId: {
+                        required: "Please select category",
+                    },
+                    //ItemTagsId: {
+                    //    validExtension: "Please select item tags",
+                    //},
+                    ThumbnailImage: {
+                        validExtension: "File must be JPG, GIF or PNG",
+                    },
+                    OverLayImage: {
+                        validExtension: "File must be JPG, GIF or PNG",
+                    },
+                    LargeImage: {
+                        validExtension: "File must be JPG, GIF or PNG",
+                    },
+                    LabelEN: {
+                        required: "Please enter an en-label",
+                    },
+                    //LabelAR: {
+                    //    required: "Please enter an ar-label",
+                    //},
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('#ConceptIds').on('change', function () {
+                var list = $("#ConceptIds").val();
+                var conceptIds = null;
+
+                if (list.length > 0) {
+                    conceptIds = list.join();
+                }
+
+                var url = "/MenuItem/GetCategoryAndItemTagList";
+                $.getJSON(url, { conceptIds: conceptIds }, function (data) {
+                    var item = "";
+                    $("#CategoryId").empty();
+                    $.each(data.categories, function (i, category) {
+                        item += '<option value="' + category.value + '">' + category.text + '</option>'
+                    });
+
+                    $("#CategoryId").html(item);
+
+                    item = "";
+                    $("#ItemTagsId").empty();
+                    $.each(data.itemTags, function (i, itemTag) {
+                        item += '<option value="' + itemTag.value + '">' + itemTag.text + '</option>'
+                    });
+                    $("#ItemTagsId").html(item);
+                });
+
+                $(this.form).valid();
+            });
+        });
+
+        function deleteImage(id) {
+            if (id === 'ThumbnailImage') {
+                $('#ThumbnailImage').val('');
+                $('#ThumbnailImageName').val('');
+                document.getElementById('thumbnail-image').src = ''
+                $("#thumbnail-image-upload").addClass('d-none');
+            } else if (id === 'LargeImage') {
+                $('#LargeImage').val('');
+                $('#LargeImageName').val('');
+                document.getElementById('large-image').src = ''
+                $("#large-image-upload").addClass('d-none');
+            } else if (id === 'OverLayImage') {
+                $('#OverLayImage').val('');
+                $('#OverLayImageName').val('');
+                document.getElementById('overlay-image').src = ''
+                $("#overlay-image-upload").addClass('d-none');
+            }
+        }
+
+        document.getElementById('ThumbnailImage').onchange = function (e) {
+            $("#ThumbnailImage").blur().focus();
+            if (this.files.length === 0) {
+                deleteImage('ThumbnailImage');
+            }
+        };
+
+        document.getElementById('LargeImage').onchange = function (e) {
+            $("#LargeImage").blur().focus();
+            if (this.files.length === 0) {
+                deleteImage('LargeImage');
+            }
+        };
+
+        document.getElementById('OverLayImage').onchange = function (e) {
+            $("#OverLayImage").blur().focus();
+            if (this.files.length === 0) {
+                deleteImage('OverLayImage');
+            }
+        };
+
+        function onImageClick(url) {
+            $('#preview-image').attr('src', url);
+            $("#preview-modal").show();
+        }
+
+        function onModalClose() {
+            $('#preview-image').attr('src', '');
+            $("#preview-modal").hide();
+        }
+
+        function isNumberDecimalKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46)
+                return false;
+            else {
+                var len = document.getElementById("Price").value.length;
+                var index = document.getElementById("Price").value.indexOf('.');
+
+                if (index > 0 && charCode == 46) {
+                    return false;
+                }
+                if (index > 0) {
+                    var CharAfterdot = (len + 1) - index;
+                    if (CharAfterdot > 3) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    </script>
+}
