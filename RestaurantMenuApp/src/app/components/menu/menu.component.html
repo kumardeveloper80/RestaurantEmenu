@@ -1,0 +1,67 @@
+<div *ngIf="menuSchedule!== undefined" class="content">
+    <section class="section category-section">
+        <div class="container" id="catsection">
+            <owl-carousel-o [options]="customOptions" class="category">
+                <ng-template carouselSlide *ngFor="let category of menuSchedule.categories;let first = first">
+                    <div class="item text-center" (click)="onSlideClick(category)"
+                        [class.active]="category === selectedCategory">
+                        <div class="category-image">
+                            <img src={{category.imageName}} alt="Category Image" />
+                        </div>
+                        <h6 class="mt-3 mb-0">{{category.labelEN}}</h6>
+                    </div>
+                </ng-template>
+            </owl-carousel-o>
+        </div>
+    </section>
+    <section id="item-list" class="section item-section">
+        <div class="container">
+            <div *ngIf="selectedCategory !== undefined" class="section-title text-center mb-4">
+                <h1 class="h4">{{selectedCategory.labelEN}}</h1>
+                <p>{{selectedCategory.detailsEN}}</p>
+            </div>
+            <ul class="list-unstyled item-list row" id="menuitems">
+                <li *ngFor="let menuItem of selectedMenuItems" class="col-lg-4">
+                    <a href="javascript:;" class="item d-flex d-lg-block" (click)="onMenuItem(menuItem)">
+                        <div class="media-left item-image">
+                            <img alt="Item Image" src="{{menuItem.thumbnailImageName||'assets/img/default.png'}}" />
+                            <!-- <div class="overlay d-flex align-items-center justify-content-center">
+                                <img alt="Item Image" src="{{menuItem.overLayImageName||'assets/img/transparent.PNG'}}" />
+                                <div class="content centered" [innerHTML]="menuItem.overlayDetailsEN"></div>
+                            </div> -->
+                        </div>
+                        <div class="media-body p-3">
+                            <h6 class="heading">{{menuItem.labelEN}}</h6>
+                            <p class="heading" style="font-size: 13px;" [innerHTML]="menuItem.detailsEN"></p>
+                            <div *ngIf="menuItem.itemTags.length > 0">
+                                <span *ngFor="let itemTag of menuItem.itemTags" class="p-r20 custom-color">
+                                    <img src={{itemTag.iconTagName}} class="icon-tag-img" />
+                                    {{itemTag.labelEN}}
+                                </span>
+                            </div>
+                            <div style="width:100%; margin-top:10px;">
+
+                                <div style="width:50%; display:inline-block;">
+                                    <strong *ngIf="lang === 'EN'" class="text-primary"> {{menuItem.currency}}
+                                        {{menuItem.sPrice}}</strong>
+
+                                    <strong *ngIf="lang === 'AR'"
+                                        class="text-primary"><span dir="ltr">{{menuItem.sPrice}}</span><span dir="ltr">
+                                            {{menuItem.currency}}</span>
+
+                                    </strong>
+                                </div>
+                                <div style="width:50%; display:inline-block;">
+                                    <span class="span-wrap-text custom-color"
+                                        [title]="menuItem.commentsEN">{{menuItem.commentsEN}}</span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+</div>

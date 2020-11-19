@@ -1,0 +1,9 @@
+.filled {
+    color: red !important;
+}
+.star {
+    font-size: 2.5rem;
+    color: #b0c4de;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

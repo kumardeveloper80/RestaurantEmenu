@@ -1,0 +1,256 @@
+/* ********************************************************************************************
+    Design for a width of 1400px and above
+*********************************************************************************************** */
+
+@media only screen and (max-width: 1920px) and (min-width: 1400px) {
+}  
+
+/* ********************************************************************************************
+    Design for a width of 768px and above
+*********************************************************************************************** */
+
+@media only screen and (min-width: 768px) {
+    
+}
+
+/* ********************************************************************************************
+    Design for a width of 992px and above
+*********************************************************************************************** */
+
+@media only screen and (min-width: 992px) {
+}
+
+/* ********************************************************************************************
+    Design for a width of 12000px and above
+*********************************************************************************************** */
+
+@media only screen and (min-width: 1200px) {    
+}
+
+/* ********************************************************************************************
+    Design for a width of 1200px and below
+*********************************************************************************************** */
+
+@media only screen and (min-width: 992px) and (max-width: 1199px)  {
+}
+
+/* ********************************************************************************************
+    Design for a width of 1024px and below
+*********************************************************************************************** */
+
+@media only screen and (max-width: 1024px) {
+}
+
+/* ********************************************************************************************
+    Design for a width of 992px and below
+*********************************************************************************************** */
+
+@media only screen and (min-width: 768px) and (max-width: 991px)  {
+}
+
+
+/* ********************************************************************************************
+    Design for a width of 991px and below
+*********************************************************************************************** */
+
+@media only screen and (max-width: 991px) {
+    .navbar-nav .dropdown-menu{
+        position: absolute;
+    }
+    .category-image img{
+        height: 80px;
+    }
+    .item-list .item{
+        margin-bottom: 10px;
+        height: calc(100% - 10px);
+    }
+    /* changed */
+    .item-image img {
+        width: 100px !important;
+        border-top-right-radius: 0rem;        
+        border-top-left-radius: 0.25rem;
+        border-bottom-left-radius: 0.25rem;
+        min-height: 110px !important;
+        height: 110px !important;
+    }
+
+    .item-image .overlay img
+    {
+        width: 100% !important;
+        border-top-right-radius: 0rem;        
+        border-top-left-radius: 0.25rem;
+        border-bottom-left-radius: 0.25rem;
+        min-height: 110px !important;
+        height: 100% !important;
+    }
+
+    
+    .large-img img {
+        height: 200px !important;
+    }
+    .item-image .overlay{
+        font-size: 0.775rem;
+    }    
+    .product-image img{
+        height: 300px;
+        width: 100% !important;
+    }
+    .product-image .overlay{
+        font-size: 1rem;
+    }
+
+    html[dir="rtl"] .item-image img, .item-image .overlay img{
+        width: 100px;
+        border-top-left-radius: 0rem;
+        border-bottom-left-radius: 0rem;
+        border-top-right-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
+        min-height: 110px;
+    }
+
+    .mb-4
+    { margin-bottom : 5px !important;}
+
+    .section-title p
+    {
+        margin-bottom:3px !important;
+    }
+    .section-title h1
+    {
+        margin-bottom:3px !important;
+        margin-top:5px !important;
+        font-size: 1.25rem !important;
+    }
+
+    .media-body p
+    {
+        margin-bottom:3px !important;
+    }
+
+    .media-body h6
+    {
+        margin-bottom:3px !important;
+    }
+
+    .category .item
+    {
+        padding-bottom:0.5rem;
+    }
+
+    .mt-3, .my-3
+    {
+        margin-top:0.5rem !important;
+    }
+
+    .p-r20{
+
+        font-size:13px !important;
+    }
+
+    .icon-tag-img
+    {
+        height:25px !important;
+        width:25px !important;
+        border-radius:5px !important;
+    }
+
+    .span-wrap-text
+    {
+        font-size:13px !important;
+        float:right !important;
+        line-height:12px !important;
+    }
+
+    .media-body strong
+    {
+        
+        margin-top:3px !important;
+    }
+
+    .close-overlay
+    {
+    display:block !important;
+    position : absolute;
+    top:5px;
+    right :10px;
+    color:red;
+    background-image:url('../../assets/img/close.png');
+    height:20px;
+    width:20px;
+    font-weight:bold;
+    }
+
+    .product-image .overlay.close-mobile
+    {
+    transform: translateY(100%);
+    opacity:0;
+    }
+
+    .span-wrap-text {
+        /* display: inline-block; */
+        /* width: 180px; */
+        white-space: nowrap;
+        /* overflow: hidden !important; */
+        text-overflow: ellipsis;
+        float:right !important;
+        /* line-height:24px !important; */
+             
+      }
+
+    /* .product-image .overlay.close-mobile
+    {
+    transform: translateY(0%);
+    opacity:1;
+    } */
+   
+
+}
+
+/* ********************************************************************************************
+    Design for a width of 767px and below
+*********************************************************************************************** */
+
+@media only screen and (max-width: 767px) {
+}
+
+/* ********************************************************************************************
+    Design for a width of 639px and below
+*********************************************************************************************** */
+
+@media only screen and (max-width: 639px) {
+}
+
+/* ********************************************************************************************
+    Design for a width of 500px and below
+*********************************************************************************************** */
+
+@media only screen and (min-width: 576px) {
+}
+
+/* ********************************************************************************************
+    Design for a width of 520px and below
+*********************************************************************************************** */
+
+@media only screen and (min-width: 480px) and (max-width: 520px)  {
+}
+
+/* ********************************************************************************************
+    Design for a width of 479px and below
+*********************************************************************************************** */
+
+@media only screen and (max-width: 479px) {   
+}
+
+/* ********************************************************************************************
+    Design for a width of 380px and below
+*********************************************************************************************** */
+
+@media only screen and (max-width: 380px) {
+}
+
+/* ********************************************************************************************
+    Design for a width of 320px and below
+*********************************************************************************************** */
+
+@media only screen and (max-width: 320px) {    
+}

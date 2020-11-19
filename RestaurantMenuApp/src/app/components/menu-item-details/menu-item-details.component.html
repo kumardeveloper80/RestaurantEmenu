@@ -1,0 +1,48 @@
+<div class="content" *ngIf="menuItem !== undefined">
+    <section class="section details-section">
+        <div class="container">
+            <!-- <div>
+                <i class="la la-arrow-circle-o-left h2" title="Back" (click)="onBack()" role="button"></i>
+            </div> -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="product-image mb-4 mb-lg-0 item-image large-img">
+                        <img (click)="removeclass()" src="{{menuItem.largeImageName||'assets/img/default.png'}}" alt="Item Image" />
+                        <div id="divoverlay" class="overlay d-flex align-items-center justify-content-center">
+                            <img id="overlayimg" alt="Item Image" src="{{menuItem.overLayImageName||'assets/img/transparent.PNG'}}" />
+                            <div class="content centered" [innerHTML]="menuItem.overlayDetailsEN"></div>
+                            <div (click)="closeme()" class="close-overlay">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="section-title mb-4">
+                        <h1 class="h4 mb-3">{{menuItem.labelEN}}</h1>
+                        <p>
+                            <strong *ngIf="lang === 'EN'" class="text-primary"> {{menuItem.currency}}
+                                {{menuItem.sPrice}}</strong>
+                            <strong *ngIf="lang === 'AR'" class="text-primary"><span dir="ltr">{{menuItem.sPrice}}</span> <span dir="ltr">{{menuItem.currency}}</span>
+                                </strong>
+                        </p>
+                        <p [innerHTML]="menuItem.detailsEN"></p>
+                        <p>
+                            <span *ngFor="let tag of menuItem.itemTags">
+                                <img src={{tag.iconTagName}} class="icon-tag-img" />
+                                <span  class="badge badge-light">
+                                    {{tag.labelEN}}
+                                </span>
+                            </span>
+                            
+                        </p>
+
+                        <ng-container *ngIf="menuItem.largeDetailsEN !== null && menuItem.largeDetailsEN !== ''">
+                            <!-- <h6 class="mt-4 pt-3">Description</h6> -->
+                            <p [innerHTML]="menuItem.largeDetailsEN"></p>
+                        </ng-container>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

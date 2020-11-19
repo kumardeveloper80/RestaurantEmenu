@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg navbar-light" id="navbar">
+    <div class="container bg-concept-theme h-60">
+        <div class="navbar-left">
+            <ul class="navbar-nav align-items-center flex-row p-0">
+                <li class="nav-item" id="feedbackBtn">
+                    <!-- <a *ngIf="storeGuid" [routerLink]="['/Survey', storeGuid]" class="nav-link"><i
+                            class="la la-smile"></i></a>
+                    <a *ngIf="!storeGuid" class="nav-link" href="javascript:;"><i class="la la-smile"></i></a> -->
+                    <a *ngIf="storeGuid" [routerLink]="['/Survey', storeGuid]" class="nav-link">
+                        <img *ngIf='logoImage!== "null"' src="{{feedBackIcon}}" height="40px" class="rounded-circle"/></a>
+                    <a *ngIf="!storeGuid" class="nav-link" href="javascript:;">
+                        <img *ngIf='logoImage!== "null"' src="{{feedBackIcon}}" height="40px" class="rounded-circle"/>
+                    </a>
+                </li>
+                <li class="nav-item d-none" id="backBtnLi">
+                    <a class="nav-link" href="javascript:;">
+                        <i class="la la-arrow-circle-o-left" title="Back" (click)="onBack()"></i>
+                    </a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="tel:+1234567890"><i class="la la-phone"></i></a>
+                </li> -->
+            </ul>
+        </div>
+        <a class="navbar-brand mx-auto font-weight-600 text-primary" href="javascript:;">
+            <img *ngIf='logoImage!== "null"' src="{{logoImage}}" height="50px" />
+        </a>
+        <div class="navbar-right">
+            <ul class="navbar-nav align-items-center flex-row p-0">
+                <li class="nav-item dropdown">
+                    <a href="javascript:;" class="nav-link lang-text" data-toggle="dropdown">
+                        {{language}}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-accout">
+                        <a class="dropdown-item en" [class.active]="language === 'EN'" href="javascript:;"
+                            (click)="onLanguage('EN')">
+                            <img src="assets/img/en.jpg" alt="Flag" />English</a>
+                        <a class="dropdown-item ar" [class.active]="language === 'AR'" href="javascript:;"
+                            (click)="onLanguage('AR')">
+                            <img src="assets/img/ar.jpg" alt="Flag" />Arabic</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

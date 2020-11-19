@@ -1,0 +1,167 @@
+<div *ngIf="surveyForm!== undefined" class="content">
+    <section *ngIf="surveyForm.questionMaster.length > 0" class="section">
+        <div class="container">
+            <form #fillUpForm="ngForm" novalidate (ngSubmit)="fillUpForm.valid">
+
+
+                <!-- Survey Header Section Start -->
+                <section *ngIf="surveyForm.sysFields.length > 0">
+                    <div *ngFor="let sysField of surveyForm.sysFields;index as i">
+                        <!-- Textbox -->
+                        <div *ngIf='sysField.type === HTMLELEMENT[6]' class="form-group">
+                            <label>{{sysField.label}}
+                                <span *ngIf="sysField.required" class="text-danger">*</span>
+                            </label>
+                            <input type="text" [name]="sysField.fieldID" [(ngModel)]="sysField.userAnswer"
+                                [required]="sysField.required" [maxlength]="sysField.maxLength"
+                                placeholder="Type answer" class="form-control" #fieldID="ngModel"
+                                [pattern]="sysField.requiredPattern">
+                            <div *ngIf="!fieldID.valid && fieldID.touched" class="text-danger text-left">
+                                <small *ngIf="fieldID.errors.required">{{sysField.requiredMessage}}</small>
+                                <small *ngIf="fieldID.errors?.pattern">{{sysField.requiredPatternMessage}}</small>
+                            </div>
+                        </div>
+
+                        <!-- DATE -->
+                        <div *ngIf='sysField.type === HTMLELEMENT[4]' class="form-group">
+                            <label>{{sysField.label}}
+                                <span *ngIf="sysField.required" class="text-danger">*</span>
+                            </label>
+                            <input type="date" [name]="sysField.fieldID" [(ngModel)]="sysField.userAnswer"
+                                [required]="sysField.required" class="form-control" #fieldID="ngModel">
+                            <div *ngIf="!fieldID.valid && fieldID.touched" class="text-danger text-left">
+                                <small>{{sysField.requiredMessage}}</small>
+                            </div>
+                        </div>
+
+                        <!-- RADIOBUTTONLIST -->
+                        <div *ngIf='sysField.type === HTMLELEMENT[3]' class="form-group">
+                            <label>{{sysField.label}}
+                                <span *ngIf="sysField.required" class="text-danger">*</span>
+                            </label>
+                            <div>
+                                <span *ngFor="let op of sysField.options;">
+                                    <input type="radio" [value]="op.value" [name]="sysField.fieldID"
+                                        [(ngModel)]="sysField.userAnswer" [required]="sysField.required">{{op.text}}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- DROPDOWN -->
+                        <div *ngIf='sysField.type === HTMLELEMENT[5]' class="form-group">
+                            <label>{{sysField.label}}
+                                <span *ngIf="sysField.required" class="text-danger">*</span>
+                            </label>
+                            <select [name]="sysField.fieldID" [(ngModel)]="sysField.userAnswer"
+                                [required]="sysField.required" #fieldID="ngModel" class="form-control">
+                                <optgroup [label]="sysField.defaultValue">
+                                    <option *ngFor="let op of sysField.options;" value="{{op.value}}">{{op.text}}
+                                    </option>
+                                </optgroup>
+                            </select>
+                            <div *ngIf="!fieldID.valid && fieldID.touched" class="text-danger text-left">
+                                <small *ngIf="fieldID.errors.required">{{sysField.requiredMessage}}</small>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+                <!-- Survey Header Section End -->
+
+                <!-- Survey Form Section Start-->
+                <section>
+                    <div *ngFor="let qMaster of surveyForm.questionMaster;index as i">
+                        <div *ngIf="qMaster.questions.length > 0">
+                            <div class="section-title text-center mb-4">
+                                <h2>{{qMaster.questionGroup}}</h2>
+                            </div>
+                            <div *ngFor="let question of qMaster.questions; index as j">
+
+                                <!-- Textbox -->
+                                <div *ngIf='question.q_type === HTMLELEMENT[1]' class="form-group">
+                                    <label>{{question.q_question}}
+                                        <span *ngIf="question.q_required" class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" [name]="'que'+ i + j" [(ngModel)]="question.userAnswer"
+                                        [required]="question.q_required" placeholder="Type answer" class="form-control">
+                                </div>
+
+                                <!-- Rating for CHECKBOXLIST && RADIOBUTTONLIST -->
+                                <div *ngIf='question.q_type === HTMLELEMENT[2] || (question.q_type === HTMLELEMENT[3] 
+                                && question.q_typevalue === QTYPEVALUE[1])' class="form-group">
+                                    <label>{{question.q_question}}
+                                        <span *ngIf="question.q_required" class="text-danger">*</span>
+                                    </label>
+                                    <div>
+                                        <ngb-rating [(rate)]="question.userAnswer" [max]="question.options.length">
+                                            <ng-template let-fill="fill">
+                                                <span class="star" [class.filled]="fill === 100">&#9733;</span>
+                                            </ng-template>
+                                        </ngb-rating>
+                                    </div>
+                                </div>
+
+                                <!-- Radiobutton -->
+                                <div *ngIf='question.q_type === HTMLELEMENT[3] && question.q_typevalue === QTYPEVALUE[2]'
+                                    class="form-group">
+                                    <label>{{question.q_question}}
+                                        <span *ngIf="question.q_required" class="text-danger">*</span>
+                                    </label>
+                                    <div>
+                                        <span *ngFor="let op of question.options;">
+                                            <input type="radio" [value]="op.value" [name]="'type_YesNo'+ i + j"
+                                                [(ngModel)]="question.userAnswer"
+                                                [required]="question.q_required">{{op.text}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- DATE -->
+                                <div *ngIf='question.q_type === HTMLELEMENT[4]' class="form-group">
+                                    <label>{{question.q_question}}
+                                        <span *ngIf="question.q_required" class="text-danger">*</span>
+                                    </label>
+                                    <input type="date" [name]="'que'+ i + j" [(ngModel)]="question.userAnswer"
+                                        [required]="question.q_required" class="form-control">
+                                </div>
+
+                                <!-- DROPDOWN -->
+                                <div *ngIf='question.q_type === HTMLELEMENT[5]' class="form-group">
+                                    <label>{{question.q_question}}asdad
+                                        <span *ngIf="question.q_required" class="text-danger">*</span>
+                                    </label>
+                                    <select [name]="'que'+ i + j" [(ngModel)]="question.userAnswer"
+                                        [required]="question.q_required" class="form-control">
+                                        <option *ngFor="let op of question.options;" value="{{op.value}}">
+                                            {{op.text}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Slider -->
+                                <div *ngIf='question.q_type === HTMLELEMENT[7]' class="form-group">
+                                    <label>{{question.q_question}}
+                                        <span *ngIf="question.q_required" class="text-danger">*</span>
+                                    </label>
+                                    <div>
+                                        <mat-slider [(ngModel)]="question.userAnswer" [name]="'que'+ i + j"
+                                            showTicks="true" autoTicks="true" thumbLabel="true"
+                                            [min]="question.minValue" [max]="question.maxValue"></mat-slider>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Survey Form Section End-->
+
+                <br />
+                <div class="text-center">
+                    <button type="submit" [disabled]="!fillUpForm.valid" (click)="onSubmit()"
+                        class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
